@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.lankakit</groupId>
+    <groupId>io.github.senanthewnaka</groupId>
     <artifactId>lanka-kit</artifactId>
     <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>LankaKit</name>
-    <description>The Ultimate Sri Lankan Developer Toolkit for Java &amp; Android: NIC, Phone, Banks, Currency, License, Vehicle, Passport, TIN</description>
-    <url>https://github.com/lanka-kit/lanka-kit</url>
+    <description>Universal Sri Lankan Developer Toolkit for Java, Swing, and Android: NIC, Phone, Banks, Currency, License, Vehicle, Passport, TIN</description>
+    <url>https://github.com/SenanThewnaka/lanka_kit</url>
 
     <licenses>
         <license>
@@ -20,6 +20,20 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <name>Senan Thewnaka</name>
+            <email>thewnakasenan@gmail.com</email>
+            <organizationUrl>https://github.com/SenanThewnaka</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/SenanThewnaka/lanka_kit.git</connection>
+        <developerConnection>scm:git:ssh://github.com:SenanThewnaka/lanka_kit.git</developerConnection>
+        <url>https://github.com/SenanThewnaka/lanka_kit</url>
+    </scm>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>
@@ -27,7 +41,6 @@
     </properties>
 
     <dependencies>
-        <!-- Zero runtime dependencies! Only JUnit for testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -38,6 +51,7 @@
 
     <build>
         <plugins>
+            <!-- Compiler plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -45,6 +59,68 @@
                 <configuration>
                     <source>8</source>
                     <target>8</target>
+                </configuration>
+            </plugin>
+
+            <!-- Attach Sources (Required by Maven Central) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Attach Javadoc (Required by Maven Central) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.6.3</version>
+                <configuration>
+                    <doclint>none</doclint>
+                    <source>8</source>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- GPG Signing Plugin (Required by Maven Central) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Sonatype Central Portal Publishing Plugin -->
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.12.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
                 </configuration>
             </plugin>
         </plugins>
