@@ -1,0 +1,31 @@
+{
+  "name": "senanthewnaka/lanka-kit",
+  "description": "Sri Lankan developer toolkit for PHP & Laravel: NIC, Phone, Banks, Currency, License, Vehicle, Passport, TIN",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "sri-lanka",
+    "nic",
+    "identity",
+    "phone",
+    "dialog",
+    "mobitel",
+    "banks",
+    "lkr",
+    "lanka-kit"
+  ],
+  "authors": [
+    {
+      "name": "Senan Thewnaka",
+      "email": "thewnakasenan@gmail.com"
+    }
+  ],
+  "autoload": {
+    "files": [
+      "ports/php/LankaKit.php"
+    ]
+  },
+  "require": {
+    "php": ">=7.4 || >=8.0"
+  }
+}

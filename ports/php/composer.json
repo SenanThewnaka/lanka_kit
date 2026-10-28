@@ -1,11 +1,12 @@
 {
-  "name": "lanka-kit/lanka-kit",
-  "description": "The Ultimate Sri Lankan Developer Toolkit for PHP & Laravel: NIC, Phone, Banks, Currency, License, Vehicle, Passport, TIN",
+  "name": "senanthewnaka/lanka-kit",
+  "description": "Sri Lankan developer toolkit for PHP & Laravel: NIC, Phone, Banks, Currency, License, Vehicle, Passport, TIN",
   "type": "library",
   "license": "MIT",
   "authors": [
     {
-      "name": "Lanka Developer Community"
+      "name": "Senan Thewnaka",
+      "email": "thewnakasenan@gmail.com"
     }
   ],
   "autoload": {
