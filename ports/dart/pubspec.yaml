@@ -1,0 +1,22 @@
+name: lanka_kit
+description: Sri Lankan developer toolkit for Dart and Flutter. Validates and parses NIC, mobile telco, CBSL banks, LKR currency, vehicles, and passports.
+version: 1.1.0
+homepage: https://github.com/lanka-kit/lanka-kit
+repository: https://github.com/lanka-kit/lanka-kit
+issue_tracker: https://github.com/lanka-kit/lanka-kit/issues
+
+topics:
+  - sri-lanka
+  - nic
+  - validation
+  - identity
+  - phone
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  # Zero runtime dependencies. Compatible with Flutter and Dart CLI/server.
+
+dev_dependencies:
+  lints: ^3.0.0

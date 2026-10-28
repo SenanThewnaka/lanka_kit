@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lanka-kit"
+version = "1.1.0"
+description = "The Ultimate Sri Lankan Developer Toolkit: NIC, Phone, Banks, Currency, License, Vehicle, Passport, TIN"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [
+    { name = "Lanka Developer Community" }
+]
+keywords = [
+    "sri-lanka",
+    "nic",
+    "identity",
+    "verification",
+    "lanka",
+    "phone-validator",
+    "dialog",
+    "mobitel",
+    "cbsl",
+    "banks",
+    "lkr",
+    "lanka-kit"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[tool.setuptools]
+py-modules = ["lanka_kit"]

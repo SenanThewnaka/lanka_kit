@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LankaKit — The Ultimate Sri Lankan Developer Toolkit</title>
+    <meta
+      name="description"
+      content="Universal Sri Lankan Developer Toolkit: NIC, Phone Carriers, CBSL Banks, LKR Currency Words, Vehicle Plates, Passports, TIN, and Postal Codes for Node.js, Flutter, Python, Java, and PHP."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div class="app-wrapper">
+      <!-- Header -->
+      <header class="header">
+        <div class="container header-container">
+          <div class="logo-group">
+            <div class="logo-badge">🇱🇰</div>
+            <div>
+              <div class="logo-title">
+                Lanka<span>Kit</span>
+                <span class="version-tag">v1.1.0</span>
+              </div>
+              <p class="logo-subtitle">The Ultimate Sri Lankan Developer Toolkit</p>
+            </div>
+          </div>
+
+          <div class="header-actions">
+            <a
+              href="#playground"
+              class="nav-link"
+              id="nav-playground"
+            >Playground</a>
+            <a
+              href="#docs"
+              class="nav-link"
+              id="nav-docs"
+            >Docs & Code</a>
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noreferrer"
+              class="btn-github"
+              id="github-btn"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+              </svg>
+              <span>Open Source</span>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <div class="container hero-container">
+          <div class="hero-pill">
+            <span class="pill-dot"></span>
+            Built for Sri Lankan Developers
+          </div>
+          <h1 class="hero-title">
+            The Missing Sri Lankan Identity & Verification Toolkit
+          </h1>
+          <p class="hero-desc">
+            Old & New NIC validation, birth date & gender extraction, bidirectional conversion, phone carrier detection, and postal lookups for <strong>Node.js, PHP, Python, and Java</strong>.
+          </p>
+
+          <div class="hero-install-box">
+            <div class="install-tabs">
+              <button class="install-tab active" data-lang="npm">npm</button>
+              <button class="install-tab" data-lang="pip">pip (Python)</button>
+              <button class="install-tab" data-lang="flutter">Flutter</button>
+              <button class="install-tab" data-lang="composer">composer (PHP)</button>
+              <button class="install-tab" data-lang="maven">Maven (Java)</button>
+            </div>
+            <div class="install-command">
+              <span class="prompt-sym">$</span>
+              <code id="install-text">npm install lanka-kit</code>
+              <button id="copy-install-btn" class="btn-copy-code" title="Copy command">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span class="copy-label">Copy</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Interactive Tools Playground -->
+      <main class="container main-content" id="playground">
+        <!-- Navigation Tabs -->
+        <div class="tool-tabs" role="tablist">
+          <button class="tool-tab active" data-target="panel-nic" role="tab">
+            <span class="tab-icon">🪪</span>
+            <span>NIC Verification</span>
+          </button>
+          <button class="tool-tab" data-target="panel-phone" role="tab">
+            <span class="tab-icon">📱</span>
+            <span>Phone & Carrier</span>
+          </button>
+          <button class="tool-tab" data-target="panel-geo" role="tab">
+            <span class="tab-icon">📍</span>
+            <span>Postal & Districts</span>
+          </button>
+          <button class="tool-tab" data-target="panel-qr" role="tab">
+            <span class="tab-icon">💳</span>
+            <span>LANKAQR Parser</span>
+          </button>
+        </div>
+
+        <!-- Panel 1: NIC Playground -->
+        <section class="tool-panel active" id="panel-nic">
+          <div class="playground-grid">
+            <!-- Left: Input & Anatomy -->
+            <div class="card glass-card">
+              <div class="card-header">
+                <h2 class="card-title">Test Any Sri Lankan NIC</h2>
+                <p class="card-subtitle">
+                  Supports 10-char Old NIC (e.g. <code>931451234V</code>) and 12-digit New NIC (e.g. <code>199314501234</code>).
+                </p>
+              </div>
+
+              <div class="input-group">
+                <label for="nic-input" class="input-label">National Identity Card Number</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    id="nic-input"
+                    class="main-input"
+                    placeholder="e.g. 962451234V or 199624501234"
+                    value="931451234V"
+                    autocomplete="off"
+                    spellcheck="false"
+                  />
+                  <button id="clear-nic-btn" class="input-clear-btn" title="Clear input">&times;</button>
+                </div>
+              </div>
+
+              <!-- Quick Presets -->
+              <div class="presets-section">
+                <span class="preset-label">Try Examples:</span>
+                <div class="preset-buttons">
+                  <button class="preset-btn" data-nic="931451234V">931451234V (Old Male)</button>
+                  <button class="preset-btn" data-nic="966451234X">966451234X (Old Female)</button>
+                  <button class="preset-btn" data-nic="200200101234">200200101234 (New Male)</button>
+                  <button class="preset-btn" data-nic="199550101234">199550101234 (New Female)</button>
+                  <button class="preset-btn" data-nic="199306101234">199306101234 (Leap Day 61)</button>
+                </div>
+              </div>
+
+              <!-- Visual Anatomy Breakdown -->
+              <div class="anatomy-container" id="nic-anatomy-box">
+                <div class="anatomy-title">NIC Anatomy Breakdown</div>
+                <div class="anatomy-pills" id="nic-pills"></div>
+                <div class="anatomy-legend" id="nic-legend"></div>
+              </div>
+            </div>
+
+            <!-- Right: Real-time Output Card -->
+            <div class="card glass-card output-card">
+              <div class="card-header flex-between">
+                <div>
+                  <h3 class="card-title">Extracted Identity Intelligence</h3>
+                  <p class="card-subtitle">Accurate to official Sri Lankan DRP standard</p>
+                </div>
+                <div id="nic-status-badge" class="badge badge-success">Valid NIC</div>
+              </div>
+
+              <div id="nic-results-container" class="results-grid">
+                <!-- Injected dynamically via JS -->
+              </div>
+
+              <!-- Equivalent NIC Conversion Banner -->
+              <div class="conversion-banner" id="nic-conversion-box">
+                <div class="conversion-info">
+                  <div class="conversion-label">Equivalent Converted NIC:</div>
+                  <div class="conversion-value" id="nic-converted-value">--</div>
+                </div>
+                <button class="btn-copy-sm" id="copy-converted-nic-btn">Copy</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 2: Phone & Carrier -->
+        <section class="tool-panel" id="panel-phone">
+          <div class="playground-grid">
+            <div class="card glass-card">
+              <div class="card-header">
+                <h2 class="card-title">Sri Lankan Phone & Carrier Detector</h2>
+                <p class="card-subtitle">
+                  Normalizes all local formats (<code>077...</code>, <code>+9471...</code>, <code>9478...</code>) and detects operator.
+                </p>
+              </div>
+
+              <div class="input-group">
+                <label for="phone-input" class="input-label">Phone Number</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    id="phone-input"
+                    class="main-input"
+                    placeholder="e.g. 077 123 4567 or +94712345678"
+                    value="0771234567"
+                    autocomplete="off"
+                  />
+                  <button id="clear-phone-btn" class="input-clear-btn">&times;</button>
+                </div>
+              </div>
+
+              <div class="presets-section">
+                <span class="preset-label">Try Operators:</span>
+                <div class="preset-buttons">
+                  <button class="preset-btn" data-phone="0771234567">Dialog (077)</button>
+                  <button class="preset-btn" data-phone="0714567890">Mobitel (071)</button>
+                  <button class="preset-btn" data-phone="0789876543">Hutch (078)</button>
+                  <button class="preset-btn" data-phone="0751122334">Airtel (075)</button>
+                  <button class="preset-btn" data-phone="0112345678">SLT Colombo (011)</button>
+                </div>
+              </div>
+
+              <div class="operator-guide">
+                <div class="guide-title">Operator Prefixes in Sri Lanka:</div>
+                <div class="operator-tags">
+                  <span class="op-tag op-dialog">Dialog: 077, 076, 074</span>
+                  <span class="op-tag op-mobitel">Mobitel: 071, 070</span>
+                  <span class="op-tag op-hutch">Hutch: 078, 072</span>
+                  <span class="op-tag op-airtel">Airtel: 075</span>
+                  <span class="op-tag op-slt">SLT / Fixed: 011, 081, 091...</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phone Results -->
+            <div class="card glass-card output-card">
+              <div class="card-header flex-between">
+                <div>
+                  <h3 class="card-title">Normalized Format & Carrier</h3>
+                  <p class="card-subtitle">Ready for SMS gateways (Notify.lk, Ideamart, Twilio)</p>
+                </div>
+                <div id="phone-carrier-badge" class="carrier-badge badge-dialog">Dialog</div>
+              </div>
+
+              <div id="phone-results-container" class="results-grid">
+                <!-- Dynamic phone fields -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 3: Postal & Geo -->
+        <section class="tool-panel" id="panel-geo">
+          <div class="card glass-card">
+            <div class="card-header">
+              <h2 class="card-title">Sri Lanka Postal Codes & Administrative Explorer</h2>
+              <p class="card-subtitle">
+                Lookup cities, postal codes, districts, and provinces across all 25 districts and 9 provinces of Sri Lanka.
+              </p>
+            </div>
+
+            <div class="geo-search-bar">
+              <input
+                type="text"
+                id="geo-search-input"
+                class="main-input"
+                placeholder="Search by Postal Code (e.g. 10250) or City (e.g. Nugegoda, Kandy, Galle)..."
+                value="Nugegoda"
+              />
+            </div>
+
+            <div class="geo-results-table-wrapper">
+              <table class="geo-table">
+                <thead>
+                  <tr>
+                    <th>Postal Code</th>
+                    <th>City / Suburb</th>
+                    <th>District</th>
+                    <th>Province</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="geo-table-body">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 4: LANKAQR Parser -->
+        <section class="tool-panel" id="panel-qr">
+          <div class="playground-grid">
+            <div class="card glass-card">
+              <div class="card-header">
+                <h2 class="card-title">LANKAQR & EMVCo Inspector</h2>
+                <p class="card-subtitle">
+                  Parses Central Bank of Sri Lanka (CBSL) LANKAQR payloads, extracts merchant info, currency (LKR 144), and verifies CRC-16 checksums.
+                </p>
+              </div>
+
+              <div class="input-group">
+                <label for="qr-input" class="input-label">LANKAQR Raw String</label>
+                <textarea
+                  id="qr-input"
+                  class="main-textarea"
+                  rows="4"
+                  placeholder="Paste EMVCo / LANKAQR raw payload here..."
+                >0002010102125204541153031445406150.005802LK5910LankaStore6007Colombo63042E56</textarea>
+              </div>
+
+              <div class="presets-section">
+                <span class="preset-label">Load Samples:</span>
+                <div class="preset-buttons">
+                  <button class="preset-btn" id="load-sample-qr-btn">Dynamic QR (LKR 150.00)</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card glass-card output-card">
+              <div class="card-header flex-between">
+                <div>
+                  <h3 class="card-title">Parsed QR Metadata</h3>
+                  <p class="card-subtitle">EMVCo Merchant-Presented Specifications</p>
+                </div>
+                <div id="qr-status-badge" class="badge badge-success">Valid LANKAQR</div>
+              </div>
+
+              <div id="qr-results-container" class="results-grid">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Documentation & Multi-Language Code Section -->
+        <section class="docs-section" id="docs">
+          <div class="card glass-card">
+            <div class="card-header">
+              <h2 class="card-title">Multi-Language Code Integration</h2>
+              <p class="card-subtitle">
+                Drop-in integration code for your stack. Select a language to copy:
+              </p>
+            </div>
+
+            <div class="code-tabs">
+              <button class="code-tab active" data-target="code-ts">TypeScript / Node.js</button>
+              <button class="code-tab" data-target="code-dart">Flutter / Dart</button>
+              <button class="code-tab" data-target="code-java">Java / Maven / Swing</button>
+              <button class="code-tab" data-target="code-python">Python / FastAPI</button>
+              <button class="code-tab" data-target="code-php">PHP / Laravel</button>
+            </div>
+
+            <div class="code-panels">
+              <!-- TypeScript Code -->
+              <div class="code-panel active" id="code-ts">
+                <pre><code><span class="token-comment">// 1. Install via npm</span>
+npm install lanka-kit
+
+<span class="token-comment">// 2. Validate and extract NIC details</span>
+<span class="token-keyword">import</span> { validateNic, validatePhone, lookupBank, formatLkr, amountToWords } <span class="token-keyword">from</span> <span class="token-string">'lanka-kit'</span>;
+
+<span class="token-keyword">const</span> identity = <span class="token-function">validateNic</span>(<span class="token-string">'931451234V'</span>);
+<span class="token-keyword">if</span> (identity.isValid) {
+  console.<span class="token-function">log</span>(identity.gender);               <span class="token-comment">// "Male"</span>
+  console.<span class="token-function">log</span>(identity.dateOfBirthFormatted); <span class="token-comment">// "1993-05-24"</span>
+  console.<span class="token-function">log</span>(identity.age);                  <span class="token-comment">// 33</span>
+  console.<span class="token-function">log</span>(identity.equivalentNic);        <span class="token-comment">// "199314501234"</span>
+}
+
+<span class="token-comment">// 3. Banking & Currency</span>
+<span class="token-keyword">const</span> bank = <span class="token-function">lookupBank</span>(<span class="token-string">'7010'</span>);            <span class="token-comment">// Commercial Bank</span>
+<span class="token-keyword">const</span> lkr = <span class="token-function">formatLkr</span>(1540.50);              <span class="token-comment">// "Rs. 1,540.50"</span>
+<span class="token-keyword">const</span> words = <span class="token-function">amountToWords</span>(1540.50);        <span class="token-comment">// "One Thousand Five Hundred Forty Rupees and Fifty Cents Only"</span>
+
+<span class="token-comment">// 4. Zod Schema Integration</span>
+<span class="token-keyword">import</span> { z } <span class="token-keyword">from</span> <span class="token-string">'zod'</span>;
+<span class="token-keyword">import</span> { nicRefinement, phoneRefinement } <span class="token-keyword">from</span> <span class="token-string">'lanka-kit'</span>;
+
+<span class="token-keyword">const</span> RegisterSchema = z.<span class="token-function">object</span>({
+  nic: z.<span class="token-function">string</span>().<span class="token-function">refine</span>(nicRefinement.validator, { message: nicRefinement.message }),
+  phone: z.<span class="token-function">string</span>().<span class="token-function">refine</span>(phoneRefinement.validator, { message: phoneRefinement.message }),
+});</code></pre>
+              </div>
+
+              <!-- Flutter / Dart Code -->
+              <div class="code-panel" id="code-dart">
+                <pre><code><span class="token-comment">// 1. Add to Flutter project:</span>
+flutter pub add lanka_kit
+
+<span class="token-comment">// 2. Import in Flutter Widgets:</span>
+<span class="token-keyword">import</span> <span class="token-string">'package:lanka_kit/lanka_kit.dart'</span>;
+
+<span class="token-comment">// Use directly in TextFormField validator</span>
+TextFormField(
+  decoration: InputDecoration(labelText: <span class="token-string">'Sri Lankan NIC'</span>),
+  validator: nicFormFieldValidator(),
+);
+
+<span class="token-comment">// Or parse programmatically</span>
+<span class="token-keyword">final</span> res = validateNic(<span class="token-string">'931451234V'</span>);
+<span class="token-keyword">if</span> (res.isValid) {
+  print(<span class="token-string">'Gender: ${res.gender}'</span>);           <span class="token-comment">// Male</span>
+  print(<span class="token-string">'DOB: ${res.dateOfBirth}'</span>);          <span class="token-comment">// 1993-05-24</span>
+  print(<span class="token-string">'New NIC: ${res.equivalentNic}'</span>);   <span class="token-comment">// 199314501234</span>
+}
+
+<span class="token-comment">// Phone Carrier & E.164 Normalization</span>
+<span class="token-keyword">final</span> phone = validatePhone(<span class="token-string">'0771234567'</span>);
+print(phone.carrier);                        <span class="token-comment">// "Dialog"</span>
+print(phone.e164);                           <span class="token-comment">// "+94771234567"</span></code></pre>
+              </div>
+
+              <!-- Java Code -->
+              <div class="code-panel" id="code-java">
+                <pre><code><span class="token-comment">&lt;!-- 1. Maven Dependency (Zero runtime dependencies) --&gt;</span>
+&lt;dependency&gt;
+    &lt;groupId&gt;com.lankakit&lt;/groupId&gt;
+    &lt;artifactId&gt;lanka-kit&lt;/artifactId&gt;
+    &lt;version&gt;1.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+
+<span class="token-comment">// 2. Java Swing Auto-Fill & Validation Example</span>
+JTextField nicField = <span class="token-keyword">new</span> JTextField();
+JTextField dobField = <span class="token-keyword">new</span> JTextField();
+
+nicField.getDocument().addDocumentListener(<span class="token-keyword">new</span> DocumentListener() {
+    <span class="token-keyword">public void</span> update() {
+        LankaKit.NicResult res = LankaKit.validateNic(nicField.getText());
+        <span class="token-keyword">if</span> (res.isValid) {
+            dobField.setText(res.dateOfBirth); <span class="token-comment">// Auto-fills DOB e.g. "1993-05-24"</span>
+        }
+    }
+    <span class="token-keyword">public void</span> insertUpdate(DocumentEvent e) { update(); }
+    <span class="token-keyword">public void</span> removeUpdate(DocumentEvent e) { update(); }
+    <span class="token-keyword">public void</span> changedUpdate(DocumentEvent e) { update(); }
+});
+
+<span class="token-comment">// 3. CBSL Bank & Currency formatting</span>
+LankaKit.BankInfo bank = LankaKit.lookupBank(<span class="token-string">"7010"</span>); <span class="token-comment">// Commercial Bank</span>
+String formatted = LankaKit.formatLkr(1540.50);       <span class="token-comment">// "Rs. 1,540.50"</span></code></pre>
+              </div>
+
+              <!-- Python Code -->
+              <div class="code-panel" id="code-python">
+                <pre><code><span class="token-comment"># 1. Install via pip</span>
+pip install lanka-kit
+
+<span class="token-comment"># 2. FastAPI / Django / Python</span>
+<span class="token-keyword">from</span> lanka_kit <span class="token-keyword">import</span> validate_nic, validate_phone, lookup_bank, format_lkr
+
+<span class="token-comment"># Parse NIC</span>
+res = <span class="token-function">validate_nic</span>(<span class="token-string">"931451234V"</span>)
+<span class="token-keyword">if</span> res[<span class="token-string">"isValid"</span>]:
+    <span class="token-function">print</span>(res[<span class="token-string">"gender"</span>])         <span class="token-comment"># Male</span>
+    <span class="token-function">print</span>(res[<span class="token-string">"dateOfBirth"</span>])    <span class="token-comment"># 1993-05-24</span>
+    <span class="token-function">print</span>(res[<span class="token-string">"age"</span>])            <span class="token-comment"># 33</span>
+    <span class="token-function">print</span>(res[<span class="token-string">"equivalentNic"</span>])  <span class="token-comment"># 199314501234</span>
+
+<span class="token-comment"># Bank lookup</span>
+bank = <span class="token-function">lookup_bank</span>(<span class="token-string">"7010"</span>)
+<span class="token-function">print</span>(bank[<span class="token-string">"name"</span>])              <span class="token-comment"># Commercial Bank of Ceylon PLC</span></code></pre>
+              </div>
+
+              <!-- PHP Code -->
+              <div class="code-panel" id="code-php">
+                <pre><code><span class="token-comment">// 1. Install via Composer</span>
+composer require lanka-kit/lanka-kit
+
+<span class="token-comment">// 2. Use in Laravel Controller or Form Request</span>
+<span class="token-keyword">use</span> <span class="token-string">LankaKit\LankaKit</span>;
+
+$nic = LankaKit::<span class="token-function">validateNic</span>(<span class="token-string">'931451234V'</span>);
+<span class="token-keyword">if</span> ($nic[<span class="token-string">'isValid'</span>]) {
+    <span class="token-keyword">echo</span> $nic[<span class="token-string">'gender'</span>];          <span class="token-comment">// "Male"</span>
+    <span class="token-keyword">echo</span> $nic[<span class="token-string">'dateOfBirth'</span>];     <span class="token-comment">// "1993-05-24"</span>
+    <span class="token-keyword">echo</span> $nic[<span class="token-string">'equivalentNic'</span>];   <span class="token-comment">// "199314501234"</span>
+}
+
+<span class="token-comment">// Bank & Currency</span>
+$bank = LankaKit::<span class="token-function">lookupBank</span>(<span class="token-string">'7010'</span>); <span class="token-comment">// Commercial Bank</span>
+<span class="token-keyword">echo</span> LankaKit::<span class="token-function">formatLkr</span>(1540.50);    <span class="token-comment">// "Rs. 1,540.50"</span></code></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="container footer-container">
+          <p>
+            LankaKit — Open-source Sri Lankan developer utility engine.
+          </p>
+          <p class="footer-sub">
+            Zero telemetry. 100% Client-side and offline capable. MIT Licensed.
+          </p>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/app.ts"></script>
+  </body>
+</html>

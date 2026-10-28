@@ -1,0 +1,12 @@
+Metadata-Version: 2.4
+Name: lanka-kit
+Version: 1.1.0
+Summary: The Ultimate Sri Lankan Developer Toolkit: NIC, Phone, Banks, Currency, License, Vehicle, Passport, TIN
+Author: Lanka Developer Community
+License: MIT
+Keywords: sri-lanka,nic,identity,verification,lanka,phone-validator,dialog,mobitel,cbsl,banks,lkr,lanka-kit
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
