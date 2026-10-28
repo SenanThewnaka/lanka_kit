@@ -28,6 +28,12 @@ test('Geo - Postal Code Lookup', () => {
   assert.equal(kandy?.city, 'Kandy');
   assert.equal(kandy?.province, 'Central');
 
+  const athurugiriya = lookupPostalCode('10150');
+  assert.notEqual(athurugiriya, null);
+  assert.equal(athurugiriya?.city, 'Athurugiriya');
+  assert.equal(athurugiriya?.district, 'Colombo');
+  assert.equal(athurugiriya?.province, 'Western');
+
   const galle = lookupPostalCode('80000');
   assert.notEqual(galle, null);
   assert.equal(galle?.city, 'Galle');

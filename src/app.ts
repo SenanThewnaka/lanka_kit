@@ -2,6 +2,12 @@ import { validateNic, convertNic } from './nic';
 import { validatePhone } from './phone';
 import { searchLocations, lookupPostalCode, SRI_LANKA_DISTRICTS } from './geo';
 import { parseLankaQr } from './lankaqr';
+import { lookupBank, getBranches } from './banks';
+import { formatLkr, amountToWords } from './currency';
+import { validateVehiclePlate } from './vehicle';
+import { validatePassport, validateTin, validateBrn } from './identity-extra';
+import { validateDrivingLicense } from './license';
+import { normalizeSinhala, stripZwj, sanitizeSearchQuery } from './unicode';
 
 // DOM Ready
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,6 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initNicPlayground();
   initPhonePlayground();
   initGeoPlayground();
+  initBankPlayground();
+  initCurrencyPlayground();
+  initVehiclePlayground();
+  initIdentityPlayground();
+  initUnicodePlayground();
   initQrPlayground();
   initCodeTabs();
 });
@@ -586,6 +597,380 @@ function initQrPlayground() {
   }
 
   updateQr();
+}
+
+// ----------------------------------------------------
+// Bank Directory Playground
+// ----------------------------------------------------
+function initBankPlayground() {
+  const input = document.getElementById('bank-input') as HTMLInputElement | null;
+  const clearBtn = document.getElementById('clear-bank-btn');
+  const badge = document.getElementById('bank-status-badge');
+  const results = document.getElementById('bank-results-container');
+  const branchList = document.getElementById('bank-branches-list');
+  const presetBtns = document.querySelectorAll<HTMLButtonElement>('[data-bank]');
+
+  if (!input) return;
+
+  function update() {
+    const val = input.value.trim();
+    const bank = lookupBank(val);
+
+    if (bank) {
+      if (badge) {
+        badge.className = 'badge badge-success';
+        badge.textContent = bank.popular ? 'Major Bank' : 'Registered Bank';
+      }
+      if (results) {
+        results.innerHTML = `
+          <div class="result-item">
+            <div class="result-label">Bank Name</div>
+            <div class="result-value" style="font-weight: 600; color: var(--accent-emerald);">${bank.name}</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Short Name</div>
+            <div class="result-value">${bank.shortName}</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">CBSL Routing Code</div>
+            <div class="result-value mono" style="color: var(--accent-cyan); font-weight: 700;">${bank.code}</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">SWIFT / BIC Code</div>
+            <div class="result-value mono">${bank.swiftCode || 'N/A'}</div>
+          </div>
+        `;
+      }
+      const branches = getBranches(bank.code);
+      if (branchList) {
+        if (branches.length > 0) {
+          branchList.innerHTML = branches
+            .map(
+              (br) =>
+                `<div style="padding: 6px 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px;"><strong style="color: var(--accent-cyan);">${br.branchCode}</strong> — ${br.name}</div>`
+            )
+            .join('');
+        } else {
+          branchList.innerHTML = `<span style="color: var(--text-muted); font-size: 13px;">Branch routing is supported via the primary routing code (${bank.code}).</span>`;
+        }
+      }
+    } else {
+      if (badge) {
+        badge.className = 'badge badge-error';
+        badge.textContent = 'Not Found';
+      }
+      if (results) {
+        results.innerHTML = `
+          <div class="result-item span-full">
+            <div class="result-label" style="color: var(--accent-rose);">Search Status</div>
+            <div class="result-value" style="font-size: 14px; color: #fecdd3;">
+              No registered bank found matching "${val}". Try searching by code (e.g. 7010) or name (e.g. BOC, Sampath).
+            </div>
+          </div>
+        `;
+      }
+      if (branchList) branchList.innerHTML = '';
+    }
+  }
+
+  input.addEventListener('input', update);
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      input.focus();
+      update();
+    });
+  }
+  presetBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      input.value = btn.getAttribute('data-bank') || '';
+      update();
+    });
+  });
+
+  update();
+}
+
+// ----------------------------------------------------
+// Currency & Words Playground
+// ----------------------------------------------------
+function initCurrencyPlayground() {
+  const input = document.getElementById('currency-input') as HTMLInputElement | null;
+  const clearBtn = document.getElementById('clear-currency-btn');
+  const results = document.getElementById('currency-results-container');
+  const presetBtns = document.querySelectorAll<HTMLButtonElement>('[data-amt]');
+
+  if (!input) return;
+
+  function update() {
+    const raw = parseFloat(input.value);
+    const amount = isNaN(raw) ? 0 : raw;
+    const formatted = formatLkr(amount);
+    const wordsEn = amountToWords(amount, { language: 'en' });
+    const wordsSi = amountToWords(amount, { language: 'si' });
+
+    if (results) {
+      results.innerHTML = `
+        <div class="result-item span-full">
+          <div class="result-label">Standard LKR Display</div>
+          <div class="result-value mono" style="font-size: 24px; font-weight: 700; color: var(--accent-emerald);">${formatted}</div>
+        </div>
+        <div class="result-item span-full">
+          <div class="result-label">Cheque / Invoice Amount in Words (English)</div>
+          <div class="result-value" style="font-size: 15px; color: var(--text-main); line-height: 1.5;">${wordsEn}</div>
+        </div>
+        <div class="result-item span-full">
+          <div class="result-label">වචනයෙන් මුදල (Sinhala)</div>
+          <div class="result-value" style="font-size: 16px; color: var(--accent-amber); line-height: 1.5;">${wordsSi}</div>
+        </div>
+      `;
+    }
+  }
+
+  input.addEventListener('input', update);
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      input.focus();
+      update();
+    });
+  }
+  presetBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      input.value = btn.getAttribute('data-amt') || '';
+      update();
+    });
+  });
+
+  update();
+}
+
+// ----------------------------------------------------
+// Vehicle Plate Playground
+// ----------------------------------------------------
+function initVehiclePlayground() {
+  const input = document.getElementById('vehicle-input') as HTMLInputElement | null;
+  const clearBtn = document.getElementById('clear-vehicle-btn');
+  const badge = document.getElementById('vehicle-status-badge');
+  const results = document.getElementById('vehicle-results-container');
+  const presetBtns = document.querySelectorAll<HTMLButtonElement>('[data-plate]');
+
+  if (!input) return;
+
+  function update() {
+    const val = input.value.trim();
+    const res = validateVehiclePlate(val);
+
+    if (res.isValid) {
+      if (badge) {
+        badge.className = 'badge badge-success';
+        badge.textContent = `Valid (${res.format})`;
+      }
+      if (results) {
+        results.innerHTML = `
+          <div class="result-item">
+            <div class="result-label">Standardized Plate</div>
+            <div class="result-value mono" style="font-weight: 700; color: var(--accent-emerald); font-size: 18px;">${res.clean}</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Vehicle Category</div>
+            <div class="result-value" style="color: var(--accent-cyan); font-weight: 600;">${res.category}</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Province</div>
+            <div class="result-value">${res.province ? `${res.province.name} (${res.province.code})` : 'Transitional / National'}</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Plate Format</div>
+            <div class="result-value mono">${res.format}</div>
+          </div>
+        `;
+      }
+    } else {
+      if (badge) {
+        badge.className = 'badge badge-error';
+        badge.textContent = 'Invalid Format';
+      }
+      if (results) {
+        results.innerHTML = `
+          <div class="result-item span-full">
+            <div class="result-label" style="color: var(--accent-rose);">Plate Error</div>
+            <div class="result-value" style="font-size: 14px; color: #fecdd3;">
+              ${res.error || 'Invalid plate format'}
+            </div>
+          </div>
+        `;
+      }
+    }
+  }
+
+  input.addEventListener('input', update);
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      input.focus();
+      update();
+    });
+  }
+  presetBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      input.value = btn.getAttribute('data-plate') || '';
+      update();
+    });
+  });
+
+  update();
+}
+
+// ----------------------------------------------------
+// Passport, TIN, License Playground
+// ----------------------------------------------------
+function initIdentityPlayground() {
+  const input = document.getElementById('identity-input') as HTMLInputElement | null;
+  const clearBtn = document.getElementById('clear-identity-btn');
+  const badge = document.getElementById('identity-status-badge');
+  const results = document.getElementById('identity-results-container');
+  const presetBtns = document.querySelectorAll<HTMLButtonElement>('[data-idval]');
+
+  if (!input) return;
+
+  function update() {
+    const val = input.value.trim();
+    const passport = validatePassport(val);
+    const tin = validateTin(val);
+    const license = validateDrivingLicense(val);
+    const brn = validateBrn(val);
+
+    let docType = 'Unknown';
+    let isValid = false;
+    let details = '';
+
+    if (passport.isValid) {
+      isValid = true;
+      docType = `Passport (${passport.type})`;
+      details = `Valid Sri Lankan Citizen Passport (${passport.clean})`;
+    } else if (tin.isValid) {
+      isValid = true;
+      docType = `Taxpayer TIN (${tin.format === 'NEW_10_DIGIT' ? '10-Digit' : '9-Digit'})`;
+      details = `Inland Revenue Department Taxpayer Identification Number (${tin.clean})`;
+    } else if (license.isValid) {
+      isValid = true;
+      docType = `Driving License (${license.format})`;
+      details = `Department of Motor Traffic Driving License (${license.clean})`;
+    } else if (brn.isValid) {
+      isValid = true;
+      docType = `Company Registration (${brn.type})`;
+      details = `Registrar of Companies (ROC) Registration Number: ${brn.clean}`;
+    }
+
+    if (isValid) {
+      if (badge) {
+        badge.className = 'badge badge-success';
+        badge.textContent = 'Valid Document';
+      }
+      if (results) {
+        results.innerHTML = `
+          <div class="result-item">
+            <div class="result-label">Document Type</div>
+            <div class="result-value" style="font-weight: 600; color: var(--accent-emerald);">${docType}</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Clean Value</div>
+            <div class="result-value mono" style="color: var(--accent-cyan); font-weight: 700;">${val.toUpperCase()}</div>
+          </div>
+          <div class="result-item span-full">
+            <div class="result-label">Description</div>
+            <div class="result-value">${details}</div>
+          </div>
+        `;
+      }
+    } else {
+      if (badge) {
+        badge.className = 'badge badge-error';
+        badge.textContent = 'Unrecognized';
+      }
+      if (results) {
+        results.innerHTML = `
+          <div class="result-item span-full">
+            <div class="result-label" style="color: var(--accent-rose);">Format Check</div>
+            <div class="result-value" style="font-size: 14px; color: #fecdd3;">
+              Does not match a known Sri Lankan Passport (e.g. N1234567), Tax TIN (9 or 10 digits), Driving License (e.g. B1234567), or ROC BRN (e.g. PV 12345).
+            </div>
+          </div>
+        `;
+      }
+    }
+  }
+
+  input.addEventListener('input', update);
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      input.focus();
+      update();
+    });
+  }
+  presetBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      input.value = btn.getAttribute('data-idval') || '';
+      update();
+    });
+  });
+
+  update();
+}
+
+// ----------------------------------------------------
+// Sinhala Unicode Playground
+// ----------------------------------------------------
+function initUnicodePlayground() {
+  const input = document.getElementById('unicode-input') as HTMLInputElement | null;
+  const clearBtn = document.getElementById('clear-unicode-btn');
+  const results = document.getElementById('unicode-results-container');
+  const presetBtns = document.querySelectorAll<HTMLButtonElement>('[data-uni]');
+
+  if (!input) return;
+
+  function update() {
+    const val = input.value;
+    const normalized = normalizeSinhala(val);
+    const stripped = stripZwj(normalized);
+    const searchQuery = sanitizeSearchQuery(val);
+
+    if (results) {
+      results.innerHTML = `
+        <div class="result-item span-full">
+          <div class="result-label">Normalized Unicode (Clean ZWJ Sequences)</div>
+          <div class="result-value" style="font-size: 18px; color: var(--accent-emerald);">${normalized || '(empty)'}</div>
+        </div>
+        <div class="result-item span-full">
+          <div class="result-label">Stripped ZWJ (For Indexing)</div>
+          <div class="result-value mono" style="font-size: 16px; color: var(--accent-cyan);">${stripped || '(empty)'}</div>
+        </div>
+        <div class="result-item span-full">
+          <div class="result-label">Database Search Query Sanitized</div>
+          <div class="result-value mono" style="color: var(--accent-amber);">${searchQuery || '(empty)'}</div>
+        </div>
+      `;
+    }
+  }
+
+  input.addEventListener('input', update);
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      input.focus();
+      update();
+    });
+  }
+  presetBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      input.value = btn.getAttribute('data-uni') || '';
+      update();
+    });
+  });
+
+  update();
 }
 
 // ----------------------------------------------------

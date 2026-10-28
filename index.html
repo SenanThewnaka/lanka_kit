@@ -112,6 +112,26 @@
             <span class="tab-icon">📍</span>
             <span>Postal & Districts</span>
           </button>
+          <button class="tool-tab" data-target="panel-banks" role="tab">
+            <span class="tab-icon">🏦</span>
+            <span>Banks & Branches</span>
+          </button>
+          <button class="tool-tab" data-target="panel-currency" role="tab">
+            <span class="tab-icon">💵</span>
+            <span>LKR & Words</span>
+          </button>
+          <button class="tool-tab" data-target="panel-vehicle" role="tab">
+            <span class="tab-icon">🚗</span>
+            <span>Vehicle Plates</span>
+          </button>
+          <button class="tool-tab" data-target="panel-identity" role="tab">
+            <span class="tab-icon">🛂</span>
+            <span>Passport & TIN</span>
+          </button>
+          <button class="tool-tab" data-target="panel-unicode" role="tab">
+            <span class="tab-icon">🔤</span>
+            <span>Sinhala Unicode</span>
+          </button>
           <button class="tool-tab" data-target="panel-qr" role="tab">
             <span class="tab-icon">💳</span>
             <span>LANKAQR Parser</span>
@@ -336,6 +356,274 @@
               </div>
 
               <div id="qr-results-container" class="results-grid">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 5: Bank Directory -->
+        <section class="tool-panel" id="panel-banks">
+          <div class="playground-grid">
+            <div class="card glass-card">
+              <div class="card-header">
+                <h2 class="card-title">CBSL Bank & Branch Directory</h2>
+                <p class="card-subtitle">
+                  Lookup official routing codes for 29 Central Bank registered banks and branch offices.
+                </p>
+              </div>
+
+              <div class="input-group">
+                <label for="bank-input" class="input-label">Bank Code or Name</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    id="bank-input"
+                    class="main-input"
+                    placeholder="e.g. 7010, Commercial Bank, BOC, or Sampath"
+                    value="7010"
+                    autocomplete="off"
+                  />
+                  <button id="clear-bank-btn" class="input-clear-btn" title="Clear input">&times;</button>
+                </div>
+              </div>
+
+              <div class="presets-section">
+                <span class="preset-label">Popular Banks:</span>
+                <div class="preset-buttons">
+                  <button class="preset-btn" data-bank="7010">Commercial Bank (7010)</button>
+                  <button class="preset-btn" data-bank="7083">Bank of Ceylon (7083)</button>
+                  <button class="preset-btn" data-bank="7278">Sampath Bank (7278)</button>
+                  <button class="preset-btn" data-bank="7135">People's Bank (7135)</button>
+                  <button class="preset-btn" data-bank="7092">HNB (7092)</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card glass-card output-card">
+              <div class="card-header flex-between">
+                <div>
+                  <h3 class="card-title">Bank Details</h3>
+                  <p class="card-subtitle">CBSL / LankaPay Routing</p>
+                </div>
+                <div id="bank-status-badge" class="badge badge-success">Registered Bank</div>
+              </div>
+
+              <div id="bank-results-container" class="results-grid">
+                <!-- Injected via JS -->
+              </div>
+
+              <div class="bank-branches-box" style="margin-top: 16px;">
+                <h4 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: var(--text-main);">Popular Branches</h4>
+                <div id="bank-branches-list" style="font-size: 0.85rem; color: var(--text-muted); display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px;">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 6: Currency & Words -->
+        <section class="tool-panel" id="panel-currency">
+          <div class="playground-grid">
+            <div class="card glass-card">
+              <div class="card-header">
+                <h2 class="card-title">LKR Currency & Words Converter</h2>
+                <p class="card-subtitle">
+                  Format amounts to Sri Lankan Rupees and convert to cheque/invoice words in English and Sinhala.
+                </p>
+              </div>
+
+              <div class="input-group">
+                <label for="currency-input" class="input-label">Monetary Amount (LKR)</label>
+                <div class="input-wrapper">
+                  <input
+                    type="number"
+                    step="0.01"
+                    id="currency-input"
+                    class="main-input"
+                    placeholder="e.g. 1540.50 or 2500000"
+                    value="1540.50"
+                  />
+                  <button id="clear-currency-btn" class="input-clear-btn" title="Clear input">&times;</button>
+                </div>
+              </div>
+
+              <div class="presets-section">
+                <span class="preset-label">Quick Amounts:</span>
+                <div class="preset-buttons">
+                  <button class="preset-btn" data-amt="1540.50">Rs. 1,540.50</button>
+                  <button class="preset-btn" data-amt="25000">Rs. 25,000.00</button>
+                  <button class="preset-btn" data-amt="1500000">Rs. 1.5 Million</button>
+                  <button class="preset-btn" data-amt="0.75">75 Cents</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card glass-card output-card">
+              <div class="card-header">
+                <h3 class="card-title">Formatted Output & Cheque Words</h3>
+                <p class="card-subtitle">Ready for print receipts, invoices, and bank vouchers</p>
+              </div>
+
+              <div id="currency-results-container" class="results-grid">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 7: Vehicle Plate Validator -->
+        <section class="tool-panel" id="panel-vehicle">
+          <div class="playground-grid">
+            <div class="card glass-card">
+              <div class="card-header">
+                <h2 class="card-title">Vehicle Registration Plate Validator</h2>
+                <p class="card-subtitle">
+                  Validates modern provincial plates, vintage numeric, and Sri (ශ්‍රී) series with vehicle category detection.
+                </p>
+              </div>
+
+              <div class="input-group">
+                <label for="vehicle-input" class="input-label">Vehicle Number Plate</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    id="vehicle-input"
+                    class="main-input"
+                    placeholder="e.g. WP CAB-1234, CP BAA-5678, or 14 Sri 1234"
+                    value="WP CAB-1234"
+                    autocomplete="off"
+                  />
+                  <button id="clear-vehicle-btn" class="input-clear-btn" title="Clear input">&times;</button>
+                </div>
+              </div>
+
+              <div class="presets-section">
+                <span class="preset-label">Try Plates:</span>
+                <div class="preset-buttons">
+                  <button class="preset-btn" data-plate="WP CAB-1234">WP CAB-1234 (Car)</button>
+                  <button class="preset-btn" data-plate="CP BAA-5678">CP BAA-5678 (Bike)</button>
+                  <button class="preset-btn" data-plate="SP AA-9012">SP AA-9012 (Three Wheeler)</button>
+                  <button class="preset-btn" data-plate="14 Sri 1234">14 Sri 1234 (Vintage)</button>
+                  <button class="preset-btn" data-plate="WP 300-1234">WP 300-1234</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card glass-card output-card">
+              <div class="card-header flex-between">
+                <div>
+                  <h3 class="card-title">Plate Analysis</h3>
+                  <p class="card-subtitle">DMT Classification & Province</p>
+                </div>
+                <div id="vehicle-status-badge" class="badge badge-success">Valid Plate</div>
+              </div>
+
+              <div id="vehicle-results-container" class="results-grid">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 8: Passport, TIN & Driving License -->
+        <section class="tool-panel" id="panel-identity">
+          <div class="playground-grid">
+            <div class="card glass-card">
+              <div class="card-header">
+                <h2 class="card-title">Passport, TIN & License Verification</h2>
+                <p class="card-subtitle">
+                  Verify Passports, Inland Revenue Department TINs, and DMT Driving Licenses.
+                </p>
+              </div>
+
+              <div class="input-group">
+                <label for="identity-input" class="input-label">Identity Document Number</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    id="identity-input"
+                    class="main-input"
+                    placeholder="e.g. N1234567, 1234567890 (TIN), B1234567 (License), or PV 12345"
+                    value="N1234567"
+                    autocomplete="off"
+                  />
+                  <button id="clear-identity-btn" class="input-clear-btn" title="Clear input">&times;</button>
+                </div>
+              </div>
+
+              <div class="presets-section">
+                <span class="preset-label">Test Samples:</span>
+                <div class="preset-buttons">
+                  <button class="preset-btn" data-idval="N1234567">Passport (N-Series)</button>
+                  <button class="preset-btn" data-idval="PA1234567">Biometric Passport</button>
+                  <button class="preset-btn" data-idval="1234567890">Tax TIN (10-Digit)</button>
+                  <button class="preset-btn" data-idval="B1234567">Driving License</button>
+                  <button class="preset-btn" data-idval="PV 12345">ROC Company (PV)</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card glass-card output-card">
+              <div class="card-header flex-between">
+                <div>
+                  <h3 class="card-title">Document Verification</h3>
+                  <p class="card-subtitle">Format and Compliance Check</p>
+                </div>
+                <div id="identity-status-badge" class="badge badge-success">Valid Document</div>
+              </div>
+
+              <div id="identity-results-container" class="results-grid">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 9: Sinhala Unicode Normalizer -->
+        <section class="tool-panel" id="panel-unicode">
+          <div class="playground-grid">
+            <div class="card glass-card">
+              <div class="card-header">
+                <h2 class="card-title">Sinhala Unicode Normalizer</h2>
+                <p class="card-subtitle">
+                  Fixes the Zero Width Joiner (\u200D) search bug in MySQL / PostgreSQL databases.
+                </p>
+              </div>
+
+              <div class="input-group">
+                <label for="unicode-input" class="input-label">Sinhala Text / Search Term</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    id="unicode-input"
+                    class="main-input"
+                    placeholder="e.g. ප්‍රවෘත්ති or කොළඹ"
+                    value="ප්‍රවෘත්ති"
+                    autocomplete="off"
+                  />
+                  <button id="clear-unicode-btn" class="input-clear-btn" title="Clear input">&times;</button>
+                </div>
+              </div>
+
+              <div class="presets-section">
+                <span class="preset-label">Samples:</span>
+                <div class="preset-buttons">
+                  <button class="preset-btn" data-uni="ප්‍රවෘත්ති">ප්‍රවෘත්ති (with ZWJ)</button>
+                  <button class="preset-btn" data-uni="ශ්‍රී ලංකා">ශ්‍රී ලංකා</button>
+                  <button class="preset-btn" data-uni="කොළ&#x200B;ඹ">කොළඹ (Hidden Space)</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card glass-card output-card">
+              <div class="card-header">
+                <h3 class="card-title">Normalized & Sanitized Output</h3>
+                <p class="card-subtitle">Use in database indexing and text search queries</p>
+              </div>
+
+              <div id="unicode-results-container" class="results-grid">
                 <!-- Injected via JS -->
               </div>
             </div>
