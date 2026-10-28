@@ -25,7 +25,7 @@ function initInstallTabs() {
     pip: 'pip install lanka-kit',
     flutter: 'flutter pub add lanka_kit',
     composer: 'composer require lanka-kit/lanka-kit',
-    maven: '<dependency> <groupId>com.lankakit</groupId> <artifactId>lanka-kit</artifactId> <version>1.1.0</version> </dependency>',
+    maven: '<dependency> <groupId>io.github.senanthewnaka</groupId> <artifactId>lanka-kit</artifactId> <version>1.1.0</version> </dependency>',
   };
 
   tabs.forEach((tab) => {

@@ -54,10 +54,14 @@ flutter pub add lanka_kit
 Add the dependency to your `pom.xml`:
 ```xml
 <dependency>
-    <groupId>com.lankakit</groupId>
+    <groupId>io.github.senanthewnaka</groupId>
     <artifactId>lanka-kit</artifactId>
     <version>1.1.0</version>
 </dependency>
+```
+Or Gradle (`build.gradle`):
+```groovy
+implementation 'io.github.senanthewnaka:lanka-kit:1.1.0'
 ```
 *Or copy [`ports/java/src/main/java/com/lankakit/LankaKit.java`](ports/java/src/main/java/com/lankakit/LankaKit.java) directly into your Java project (zero dependencies, works on Java 8 through 21).*
 
