@@ -1,18 +1,25 @@
 {
   "name": "lanka-kit",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "module",
   "description": "The Ultimate Sri Lankan Developer Toolkit: Identity (NIC, Driving License, Passport, TIN, BRN), Mobile Telco, Banking & Branch Codes, LKR Currency Words, Geo & LankaQR",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
-    "lib"
+    "lib",
+    "NOTICE.md",
+    "THIRD-PARTY-LICENSES.md"
   ],
+  "sideEffects": false,
   "exports": {
     ".": {
       "import": "./lib/index.js",
       "types": "./lib/index.d.ts"
+    },
+    "./postal": {
+      "import": "./lib/postal/index.js",
+      "types": "./lib/postal/index.d.ts"
     }
   },
   "scripts": {
