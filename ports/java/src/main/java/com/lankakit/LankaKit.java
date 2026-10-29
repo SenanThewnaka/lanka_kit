@@ -1,5 +1,9 @@
 package com.lankakit;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
@@ -374,4 +378,149 @@ public final class LankaKit {
         if (text == null) return "";
         return text.replaceAll("[\u200B\u200C\u200D\uFEFF]", "");
     }
+
+    // -------------------------------------------------------------
+    // Postal & Geolocation Directory (Sri Lanka Post Verified)
+    // -------------------------------------------------------------
+
+    public static class PostalLocation {
+        public final String postalCode;
+        public final String city;
+        public final String district;
+        public final String province;
+
+        public PostalLocation(String postalCode, String city, String district, String province) {
+            this.postalCode = postalCode;
+            this.city = city;
+            this.district = district;
+            this.province = province;
+        }
+
+        public String getPostalCode() { return postalCode; }
+        public String getCity() { return city; }
+        public String getDistrict() { return district; }
+        public String getProvince() { return province; }
+
+        @Override
+        public String toString() {
+            return city + ", " + district + " (" + postalCode + ")";
+        }
+    }
+
+    private static volatile List<PostalLocation> postalLocations;
+    private static volatile Map<String, PostalLocation> postalByCode;
+
+    private static synchronized void ensurePostalLoaded() {
+        if (postalLocations != null) return;
+        List<PostalLocation> list = new ArrayList<>(2200);
+        Map<String, PostalLocation> map = new HashMap<>(2200);
+        try (InputStream is = LankaKit.class.getClassLoader().getResourceAsStream("postal_codes.tsv")) {
+            if (is != null) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        String[] parts = line.split("\t");
+                        if (parts.length >= 4) {
+                            PostalLocation loc = new PostalLocation(parts[0], parts[1], parts[2], parts[3]);
+                            list.add(loc);
+                            if (!map.containsKey(parts[0])) {
+                                map.put(parts[0], loc);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+        postalLocations = Collections.unmodifiableList(list);
+        postalByCode = Collections.unmodifiableMap(map);
+    }
+
+    private static final Object[][] DISTRICT_RANGES = {
+        {"Colombo", "Western", 0, 10999},
+        {"Gampaha", "Western", 11000, 11999},
+        {"Kalutara", "Western", 12000, 12999},
+        {"Kandy", "Central", 20000, 20999},
+        {"Matale", "Central", 21000, 21999},
+        {"Nuwara Eliya", "Central", 22000, 22999},
+        {"Galle", "Southern", 80000, 80999},
+        {"Matara", "Southern", 81000, 81999},
+        {"Hambantota", "Southern", 82000, 82999},
+        {"Jaffna", "Northern", 40000, 40999},
+        {"Kilinochchi", "Northern", 44000, 44999},
+        {"Mannar", "Northern", 41000, 41999},
+        {"Vavuniya", "Northern", 43000, 43999},
+        {"Mullaitivu", "Northern", 42000, 42999},
+        {"Batticaloa", "Eastern", 30000, 30999},
+        {"Ampara", "Eastern", 32000, 32999},
+        {"Trincomalee", "Eastern", 31000, 31999},
+        {"Kurunegala", "North Western", 60000, 60999},
+        {"Puttalam", "North Western", 61000, 61999},
+        {"Anuradhapura", "North Central", 50000, 50999},
+        {"Polonnaruwa", "North Central", 51000, 51999},
+        {"Badulla", "Uva", 90000, 90999},
+        {"Monaragala", "Uva", 91000, 91999},
+        {"Ratnapura", "Sabaragamuwa", 70000, 70999},
+        {"Kegalle", "Sabaragamuwa", 71000, 71999}
+    };
+
+    /**
+     * Lookup location by 5-digit postal code.
+     */
+    public static PostalLocation lookupPostalCode(String postalCode) {
+        if (postalCode == null) return null;
+        ensurePostalLoaded();
+        String code = postalCode.trim();
+        while (code.length() < 5) code = "0" + code;
+
+        PostalLocation loc = postalByCode.get(code);
+        if (loc != null) return loc;
+
+        try {
+            int num = Integer.parseInt(code);
+            for (Object[] range : DISTRICT_RANGES) {
+                String dist = (String) range[0];
+                String prov = (String) range[1];
+                int start = (Integer) range[2];
+                int end = (Integer) range[3];
+                if (num >= start && num <= end) {
+                    return new PostalLocation(code, dist + " Area", dist, prov);
+                }
+            }
+        } catch (NumberFormatException ignored) {}
+
+        return null;
+    }
+
+    /**
+     * Search post offices and postal codes by keyword (case-insensitive).
+     */
+    public static List<PostalLocation> searchLocations(String query) {
+        if (query == null) return Collections.emptyList();
+        String q = query.trim().toLowerCase();
+        if (q.isEmpty()) return Collections.emptyList();
+
+        ensurePostalLoaded();
+        List<String> terms = new ArrayList<>();
+        terms.add(q);
+        if ("malabe".equals(q)) {
+            terms.add("malambe");
+        }
+
+        List<PostalLocation> results = new ArrayList<>();
+        for (PostalLocation loc : postalLocations) {
+            String code = loc.postalCode.toLowerCase();
+            String city = loc.city.toLowerCase();
+            String dist = loc.district.toLowerCase();
+            String prov = loc.province.toLowerCase();
+
+            for (String term : terms) {
+                if (code.contains(term) || city.contains(term) || dist.contains(term) || prov.contains(term)) {
+                    results.add(loc);
+                    break;
+                }
+            }
+        }
+        return results;
+    }
 }
+

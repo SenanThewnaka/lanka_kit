@@ -1,3 +1,10 @@
+## 1.2.0
+
+* Added Sri Lanka Post verified directory with 2,121 postcodes and 2,137 post offices.
+* Added `lookupPostalCode()` with automatic district-range fallback estimation.
+* Added `searchLocations()` for keyword search across cities, districts, and provinces.
+* Added support for common search aliases (e.g., Malabe -> Malambe).
+
 ## 1.1.0
 
 * Initial release of `lanka_kit` for Dart and Flutter.

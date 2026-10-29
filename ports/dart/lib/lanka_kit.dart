@@ -2,6 +2,8 @@
 /// Sri Lankan utility toolkit for Dart and Flutter.
 library lanka_kit;
 
+export 'src/postal_data.dart';
+
 /// Result structure for Sri Lankan National Identity Card (NIC) analysis.
 class NicResult {
   final bool isValid;

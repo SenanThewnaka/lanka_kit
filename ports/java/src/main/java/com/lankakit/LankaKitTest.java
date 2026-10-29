@@ -33,7 +33,17 @@ public class LankaKitTest {
         assert car.isValid && "Motor Car".equals(car.category) : "Vehicle plate test failed";
         System.out.println("✔ Vehicle Plate: " + car.clean + " (" + car.category + ")");
 
-        // 5. Java Swing Integration Example Test
+        // 5. Postal Code Lookup (Sri Lanka Post Verified)
+        LankaKit.PostalLocation postal = LankaKit.lookupPostalCode("10150");
+        assert postal != null && "Athurugiriya".equals(postal.city) : "Postal lookup 10150 failed";
+        System.out.println("✔ Postal Lookup: " + postal.city + ", " + postal.district + " (" + postal.postalCode + ")");
+
+        // 6. Postal Search (Malabe alias)
+        java.util.List<LankaKit.PostalLocation> search = LankaKit.searchLocations("Malabe");
+        assert !search.isEmpty() && "Malambe".equals(search.get(0).city) : "Postal search Malabe failed";
+        System.out.println("✔ Postal Search Malabe: " + search.get(0).city + " (" + search.get(0).postalCode + ")");
+
+        // 7. Java Swing Integration Example Test
         JTextField nicTextField = new JTextField();
         JTextField dobTextField = new JTextField();
         JTextField genderTextField = new JTextField();
