@@ -1,0 +1,110 @@
+name: CI - Multi-Language Verification
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-node:
+    name: Node.js & TypeScript Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build TypeScript & Bundle
+        run: npm run build
+
+      - name: Run Tests
+        run: npm test
+
+  test-java:
+    name: Java Port Build & Verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Compile and Test Java Library
+        run: mvn -B compile test -f ports/java/pom.xml
+
+  test-python:
+    name: Python Port Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Build Tools
+        run: pip install build
+
+      - name: Verify Python Module Import
+        run: python3 -c "import sys; sys.path.insert(0, 'ports/python'); import lanka_kit; print('Python port OK')"
+
+      - name: Build Wheel & Source Distribution
+        run: python -m build ports/python
+
+  test-dart:
+    name: Dart / Flutter Port Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@v1
+
+      - name: Get Dependencies
+        run: |
+          cd ports/dart
+          dart pub get
+
+      - name: Analyze Dart Code
+        run: |
+          cd ports/dart
+          dart analyze
+
+      - name: Run Dart Example
+        run: |
+          cd ports/dart
+          dart run example/main.dart
+
+  test-php:
+    name: PHP Port Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Lint PHP Files
+        run: |
+          php -l ports/php/LankaKit.php
+          php -l ports/php/LankaId.php

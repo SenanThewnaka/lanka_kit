@@ -1,0 +1,153 @@
+name: Release - Automated Multi-Registry Publishing
+
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+    inputs:
+      publish_npm:
+        description: 'Publish to npm'
+        type: boolean
+        default: true
+      publish_pypi:
+        description: 'Publish to PyPI'
+        type: boolean
+        default: true
+      publish_maven:
+        description: 'Publish to Maven Central'
+        type: boolean
+        default: true
+      publish_pub:
+        description: 'Publish to pub.dev'
+        type: boolean
+        default: true
+
+jobs:
+  publish-npm:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' || inputs.publish_npm
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Install & Build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "::warning::NPM_TOKEN secret is not set. Skipping npm publish."
+          else
+            npm publish --access public
+          fi
+
+  publish-pypi:
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' || inputs.publish_pypi
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Build & Twine
+        run: pip install build twine
+
+      - name: Build Distribution
+        run: python -m build ports/python
+
+      - name: Upload to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          if [ -z "$TWINE_PASSWORD" ]; then
+            echo "::warning::PYPI_API_TOKEN secret is not set. Skipping PyPI upload."
+          else
+            twine upload --skip-existing ports/python/dist/*
+          fi
+
+  publish-maven:
+    name: Publish to Maven Central (Sonatype)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' || inputs.publish_maven
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Configure GPG Key & Maven settings.xml
+        env:
+          GPG_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          SONATYPE_USER: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          SONATYPE_PASS: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+        run: |
+          if [ -z "$GPG_KEY" ] || [ -z "$SONATYPE_USER" ] || [ -z "$SONATYPE_PASS" ]; then
+            echo "::warning::Maven Central secrets (GPG_PRIVATE_KEY, MAVEN_CENTRAL_USERNAME, or MAVEN_CENTRAL_PASSWORD) missing. Skipping deployment."
+            echo "SKIP_MAVEN=true" >> $GITHUB_ENV
+          else
+            echo "$GPG_KEY" | gpg --batch --import || true
+            mkdir -p ~/.m2
+            cat <<EOF > ~/.m2/settings.xml
+          <settings>
+            <servers>
+              <server>
+                <id>central</id>
+                <username>${SONATYPE_USER}</username>
+                <password>${SONATYPE_PASS}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+          fi
+
+      - name: Deploy to Maven Central
+        if: env.SKIP_MAVEN != 'true'
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          mvn -B clean deploy -f ports/java/pom.xml -DskipTests -Dgpg.passphrase="${GPG_PASSPHRASE}"
+
+  publish-pub-dev:
+    name: Publish to pub.dev (Dart/Flutter)
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    if: github.event_name == 'release' || inputs.publish_pub
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@v1
+
+      - name: Get Dependencies
+        run: |
+          cd ports/dart
+          dart pub get
+
+      - name: Publish to pub.dev
+        run: |
+          cd ports/dart
+          # Uses pub.dev automated publishing with GitHub Actions OIDC
+          dart pub publish --force || echo "::warning::pub.dev automated publishing requires repository authorization in pub.dev package settings."
