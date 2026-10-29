@@ -12,9 +12,11 @@ test('Geo - Total 25 Districts', () => {
 });
 
 test('Geo - Postal Code Lookup', () => {
+  // Values below are the Sri Lanka Post directory (2022) names. The old hand-written table had
+  // several of these wrong (e.g. 10100 was 'Battaramulla', 10120 'Kotte', 70300 'Kahawatta').
   const colomboFort = lookupPostalCode('00100');
   assert.notEqual(colomboFort, null);
-  assert.equal(colomboFort?.city, 'Colombo 01 (Fort)');
+  assert.equal(colomboFort?.city, 'Colombo 01');
   assert.equal(colomboFort?.district, 'Colombo');
   assert.equal(colomboFort?.province, 'Western');
 
@@ -48,7 +50,9 @@ test('Geo - Province District Filtering', () => {
 });
 
 test('Geo - Location Search', () => {
+  // The register spells Malabe as 'Malambe' (10115). 'Malabe' is kept working as an alias.
   const results = searchLocations('Malabe');
   assert.equal(results.length > 0, true);
-  assert.equal(results[0].postalCode, '10200');
+  assert.equal(results[0].postalCode, '10115');
+  assert.equal(results[0].city, 'Malambe');
 });

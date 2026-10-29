@@ -7,12 +7,19 @@
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
-    "lib"
+    "lib",
+    "NOTICE.md",
+    "THIRD-PARTY-LICENSES.md"
   ],
+  "sideEffects": false,
   "exports": {
     ".": {
       "import": "./lib/index.js",
       "types": "./lib/index.d.ts"
+    },
+    "./postal": {
+      "import": "./lib/postal/index.js",
+      "types": "./lib/postal/index.d.ts"
     }
   },
   "scripts": {

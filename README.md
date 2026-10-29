@@ -3,7 +3,7 @@
 > **The Ultimate Sri Lankan Developer Toolkit**  
 > *Zero runtime dependencies. First-class support for TypeScript / Node.js, Flutter / Dart, Java (Swing & Maven), Python (FastAPI/Django), and PHP (Laravel).*
 
-[![Tests](https://img.shields.io/badge/tests-33%20passed-10b981?style=flat-square)](#)
+[![Tests](https://img.shields.io/badge/tests-44%20passed-10b981?style=flat-square)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-success?style=flat-square)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6?style=flat-square)](#)
@@ -27,7 +27,7 @@ Prior to **LankaKit**, developers had to juggle multiple unmaintained, fragmente
 5. **Vehicle Number Plates**: Identifies modern provincial plates (`WP CAB-1234`), vintage series (`64-1234`), and Sri series (`14 ශ්‍රී 1234`), automatically classifying vehicle types (Cars, Bikes, Three-wheelers).
 6. **Passports, TIN & Business Registrations**: Validates citizen Passports (`N` series), Inland Revenue Department TINs (9/10 digits), and Registrar of Companies PV numbers (`PV 12345`).
 7. **Sinhala Unicode Normalizer**: Fixes the notorious Zero Width Joiner (`\u200D`) bugs that break database searches in MySQL/PostgreSQL.
-8. **Postal Codes & LankaQR**: Complete database of 25 administrative districts and CBSL-compliant EMVCo QR code parsing.
+8. **Postal Codes & LankaQR**: Postcodes, post offices and districts checked against the Sri Lanka Post directory, plus CBSL-compliant EMVCo QR code parsing.
 
 ---
 
@@ -192,6 +192,31 @@ const RegisterSchema = z.object({
 });
 ```
 
+### 🗺️ 9. Postal Codes & District Pickers (`lanka-kit/postal`)
+```ts
+import { lookupPostalCode, searchLocations } from 'lanka-kit';
+import { getDistricts, getCitiesByDistrictName, findNearestCities } from 'lanka-kit/postal';
+
+lookupPostalCode('10100');
+// { postalCode: '10100', city: 'Sri Jayawardenapura', district: 'Colombo', province: 'Western' }
+
+searchLocations('Malabe');        // [{ postalCode: '10115', city: 'Malambe', ... }]
+getDistricts();                   // 25 districts, sorted, with province_id
+getCitiesByDistrictName('Galle'); // 96 post offices in Galle, with postcode and coordinates
+```
+
+The postal data is a verified copy of the Sri Lanka Post *Postal Code Directory* (2022 edition).
+Postcodes, post-office names and district assignments were checked against that directory and
+the Colombo zone table. Post offices that no government source confirmed are not included. The
+directory is from 2022, so later postcode changes are not reflected. Sinhala and Tamil names and
+coordinates are not in the government directory. They are blank for post offices added from it.
+
+The `lanka-kit/postal` subpath exposes provinces, districts, post offices, and picker helpers. The
+dataset sits in `lib/postal/data.js` and is marked side-effect free, so bundlers drop it when unused.
+
+Data source: [sri-lanka-postal-locations](https://github.com/hareeshkar/sri-lanka-postal-locations)
+by Hareeshkar Ravi (MIT). See [`NOTICE.md`](./NOTICE.md) and [`THIRD-PARTY-LICENSES.md`](./THIRD-PARTY-LICENSES.md).
+
 ---
 
 ## 🎯 Flutter / Dart Integration
@@ -291,7 +316,7 @@ def register(user: UserRegister):
 
 ## 🧪 Testing
 
-Run the built-in test suite (33 unit tests):
+Run the built-in test suite (44 unit tests):
 
 ```bash
 npm test
@@ -308,7 +333,8 @@ Test coverage includes:
 - Vehicle plate modern provincial, transitional, vintage, and Sri series
 - Passports, Tax Identification Numbers (TIN), and ROC Business Registrations (PV numbers)
 - Sinhala Unicode Normalizer and ZWJ stripping for search indexing
-- 25 Administrative Districts and Postal Code lookups
+- Postal code lookups and post-office search, checked against the Sri Lanka Post directory (2022)
+- 25 Administrative Districts, 9 Provinces, and the `lanka-kit/postal` subpath
 - LANKAQR EMVCo Tag-Length-Value (TLV) parsing & CRC-16 validation
 
 ---

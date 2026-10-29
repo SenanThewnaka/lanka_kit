@@ -1,6 +1,6 @@
 import { validateNic, convertNic } from './nic';
 import { validatePhone } from './phone';
-import { searchLocations, lookupPostalCode, SRI_LANKA_DISTRICTS } from './geo';
+import { searchLocations } from './geo';
 import { parseLankaQr } from './lankaqr';
 import { lookupBank, getBranches } from './banks';
 import { formatLkr, amountToWords } from './currency';
